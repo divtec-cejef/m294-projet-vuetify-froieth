@@ -1,12 +1,15 @@
 <template>
   <v-app>
     <v-btn @click="logData()">Charger les ressources</v-btn>
+    <menu-principal />
     <router-view />
   </v-app>
 </template>
 
 <script setup>
   import { onMounted } from 'vue'
+  // Importation du composant MenuPrincipal pour l'en-tête de l'application
+  import MenuPrincipal from '@/components/AppHeader.vue'
   import { useAppStore } from '@/stores/app'
   const store = useAppStore()
   onMounted(() => {
