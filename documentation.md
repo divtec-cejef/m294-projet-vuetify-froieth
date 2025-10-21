@@ -3,8 +3,8 @@
 ## 1. Présentation du projet
 
 ### Concept
-- API choisie et pourquoi  
-- Public cible  
+- API choisie : Deezer API  
+- Public cible : Fans de musique 
 - Objectifs de l’application  
 
 ### Fonctionnalités principales
