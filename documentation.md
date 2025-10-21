@@ -5,7 +5,7 @@
 ### Concept
 - API choisie : Deezer API  
 - Public cible : Fans de musique 
-- Objectifs de l’application  
+- Objectifs de l’application : Présenter des musiques, des albums et des artistes.
 
 ### Fonctionnalités principales
 - Affichage d’une liste d’éléments (via API)
@@ -26,13 +26,19 @@ _(Capture d’écran de l’application)_
 #### Documentation & tutos
 - [Vue 3 Docs](https://vuejs.org/guide/introduction.html)
 - [Vuetify Docs](https://vuetifyjs.com/en/components/all/)
-- [Pinia Docs](https://pinia.vuejs.org/)
-- [Public APIs List](https://github.com/public-apis/public-apis)
-- Autres ressources...
+- [Claude AI](https://claude.ai/)
+- [ChatGPT](https://chatgpt.com/)
+- [Deezer API](https://developers.deezer.com/api/)
 
 #### Progression
-- Semaine 1 : ...
-- Semaine 2 : ...
+- Semaine 1 :
+      - Initialisation du projet
+      - Prise de connaissance des capacités de l'API
+      - Tests de l'API
+- Semaine 2 : 
+      - Ajout du composant des carte des musiques
+      - Affichage de ces dernières
+      - Correction des premier bugs
 - Semaine 3 : ...
 - Semaine 4 : ...
 - ...
@@ -42,7 +48,7 @@ _(Capture d’écran de l’application)_
 ## 3. Outils et méthodologie
 
 ### Environnement de développement
-- **IDE** : VS Code / WebStorm / Autre
+- **IDE** : WebStorm
 - **Versioning** : Git + GitHub
 - **Dépendances principales** : Vue 3, Vuetify 3, Pinia, Axios/Fetch
 - **Gestion API Keys** : `.env` + `.env.example`
@@ -109,10 +115,8 @@ Outils utiles : Figma / Draw.io / ...
 
 ## 5. Usage d’intelligence artificielle
 
-**TRANSPARENCE OBLIGATOIRE** : Si vous utilisez une IA, vous DEVEZ :
-
 ### IA utilisée
-- **Nom** : ChatGPT / Claude / GitHub Copilot / Autre  
+- **Nom** : ChatGPT / Claude
 - **Version** : _(ex. GPT-4)_  
 - **Contexte** : Aide ponctuelle / Génération de code / Debugging  
 
@@ -122,7 +126,7 @@ Outils utiles : Figma / Draw.io / ...
 - Génération de snippets Vue/Vuetify : X%  
 - Aide à la structuration du projet : X%
 - Debugging : X%  
-- Recherche d’idées : X%  
+- Recherche d’idées : 0%  
 
 **Compréhension et adaptation**
 - Expliquer ce que fait le code généré  
