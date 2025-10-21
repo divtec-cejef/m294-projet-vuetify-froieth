@@ -34,3 +34,14 @@
     },
   })
 </script>
+
+<!-- Titre des musique en dégradé
+<style scoped>
+.text-capitalize {
+  background: linear-gradient(10deg, #1ebbe7, #ca6bd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+</style>
+-->
