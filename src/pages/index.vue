@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 class="mb-6 text-center">Meilleurs sons du moment</h1>
+    <h1 class="mb-6 text-center">Meilleurs musiques du moment</h1>
 
     <div class="slider-container">
       <!-- Flèche gauche -->
@@ -100,6 +100,7 @@
       currentIndex.value--
     }
   }
+
 </script>
 
 <style scoped>

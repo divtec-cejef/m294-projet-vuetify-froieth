@@ -1,24 +1,29 @@
 <template>
-  <v-card>
+  <v-card class="relative-card">
     <v-img
+      class="card-img"
       contain
       height="300"
       :src="artiste.album?.cover_medium || artiste.cover_medium || '/images/default.jpg'"
-    />
+    >
+      <!-- bouton coeur en haut à droite -->
+      <v-btn
+        class="favorite-btn"
+        icon
+        @click.stop.prevent="appStore.toggleFavorite(artiste)"
+      >
+        <v-icon :color="appStore.isFavorite(artiste) ? '#8889db' : 'black'">
+          {{ appStore.isFavorite(artiste) ? 'mdi-heart' : 'mdi-heart-outline' }}
+        </v-icon>
+      </v-btn>
+    </v-img>
+
     <v-card-title class="text-capitalize">
       {{ artiste.title || artiste.name }}
     </v-card-title>
     <v-card-subtitle v-if="artiste.artist">
       {{ artiste.artist.name }}
     </v-card-subtitle>
-
-    <v-card-actions>
-      <v-btn icon @click.prevent="appStore.toggleFavorite(artiste)">
-        <v-icon :color="appStore.isFavorite(artiste) ? 'red' : ''">
-          {{ appStore.isFavorite(artiste) ? 'mdi-heart' : 'mdi-heart-outline' }}
-        </v-icon>
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -34,14 +39,23 @@
     },
   })
 </script>
-
-<!-- Titre des musique en dégradé
 <style scoped>
-.text-capitalize {
-  background: linear-gradient(10deg, #1ebbe7, #ca6bd4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
+.card-img {
+  margin-bottom: -2em;
+  margin-top: -2.1em;
 }
+
+.relative-card {
+  position: relative;
+  padding-bottom: 1em;
+}
+
+/* bouton coeur sur l'image */
+.favorite-btn {
+  position: absolute;
+  top: 2.4em;
+  right: 0.3em;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 </style>
--->
