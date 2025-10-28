@@ -8,13 +8,16 @@ export const useAppStore = defineStore('app', {
     isLoading: false,
     error: null,
     resources: [],
-    favorites: [], // ✅ Nouveau : stocker les favoris
+    searchResults: [], // ✅ Nouveau : résultats de recherche
+    favorites: [],
   }),
 
   getters: {
     hasResources: state => state.resources.length > 0,
     totalResources: state => state.resources.length,
-    totalFavorites: state => state.favorites.length, // ✅ Nombre de favoris
+    hasSearchResults: state => state.searchResults.length > 0, // ✅ Nouveau
+    totalSearchResults: state => state.searchResults.length, // ✅ Nouveau
+    totalFavorites: state => state.favorites.length,
   },
 
   actions: {
@@ -23,7 +26,6 @@ export const useAppStore = defineStore('app', {
       this.error = null
 
       try {
-        // const response = await api.get('/album/302127.json')
         const response = await api.get('/chart/0.json')
         return response.data
       } catch (error) {
@@ -35,6 +37,34 @@ export const useAppStore = defineStore('app', {
       }
     },
 
+    // ✅ Nouvelle méthode de recherche
+    async searchArtist (query) {
+      this.isLoading = true
+      this.error = null
+
+      try {
+        const response = await api.get(`/search?q=${encodeURIComponent(query)}`)
+        console.log('🔍 Résultats de recherche:', response.data)
+
+        if (response.data) {
+          this.searchResults = response.data.data || []
+          return this.searchResults
+        }
+        return []
+      } catch (error) {
+        this.error = error.message || 'Erreur lors de la recherche'
+        console.error('Erreur de recherche:', error)
+        return []
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    // ✅ Réinitialiser les résultats de recherche
+    clearSearch () {
+      this.searchResults = []
+    },
+
     async init () {
       const data = await this.fetchRoster()
 
@@ -42,29 +72,25 @@ export const useAppStore = defineStore('app', {
 
       if (data) {
         this.resources = data.tracks?.data || data.data || []
-        console.log('🎵 RESOURCES:', this.resources)
+        console.log('RESOURCES:', this.resources)
       } else {
         console.error('Aucune donnée récupérée')
       }
     },
 
-    // ✅ Vérifier si une chanson est en favoris
     isFavorite (song) {
       return this.favorites.some(fav => fav.id === song.id)
     },
 
-    // ✅ Ajouter/retirer des favoris
     toggleFavorite (song) {
       const index = this.favorites.findIndex(fav => fav.id === song.id)
 
       if (index === -1) {
-        // Ajouter aux favoris
         this.favorites.push(song)
-        console.log('❤️ Ajouté aux favoris:', song.title || song.name)
+        console.log('Ajouté aux favoris:', song.title || song.name)
       } else {
-        // Retirer des favoris
         this.favorites.splice(index, 1)
-        console.log('💔 Retiré des favoris:', song.title || song.name)
+        console.log('Retiré des favoris:', song.title || song.name)
       }
     },
   },
