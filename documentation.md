@@ -39,7 +39,9 @@ _(Capture d’écran de l’application)_
       - Ajout du composant des carte des musiques
       - Affichage de ces dernières
       - Correction des premier bugs
-- Semaine 3 : ...
+- Semaine 3 : 
+      - Ajout du code de base de la page favoris
+      - Ajout du code de base de la page recherche
 - Semaine 4 : ...
 - ...
 
