@@ -8,6 +8,7 @@ export const useAppStore = defineStore('app', {
     isLoading: false,
     error: null,
     resources: [],
+    artists: [],
     searchResults: [], // ✅ Nouveau : résultats de recherche
     favorites: [],
   }),
@@ -72,6 +73,7 @@ export const useAppStore = defineStore('app', {
 
       if (data) {
         this.resources = data.tracks?.data || data.data || []
+        this.artists = data.artists?.data || []
         console.log('RESOURCES:', this.resources)
       } else {
         console.error('Aucune donnée récupérée')
