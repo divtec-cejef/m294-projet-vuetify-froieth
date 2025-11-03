@@ -4,9 +4,9 @@
 ## 1. 🎨 Présentation du projet
 
 ### Concept
-- API choisie et pourquoi  
-- Public cible  
-- Objectifs de l’application  
+- API choisie : Deezer API  
+- Public cible : Fans de musique 
+- Objectifs de l’application : Présenter des musiques, des albums et des artistes.
 
 ### Fonctionnalités principales
 - Affichage d’une liste d’éléments (via API)
@@ -27,14 +27,25 @@ _(Capture d’écran de l’application)_
 #### Documentation & tutos
 - [Vue 3 Docs](https://vuejs.org/guide/introduction.html)
 - [Vuetify Docs](https://vuetifyjs.com/en/components/all/)
-- [Pinia Docs](https://pinia.vuejs.org/)
-- [Public APIs List](https://github.com/public-apis/public-apis)
-- Autres ressources...
-
+- [Claude AI](https://claude.ai/)
+- [ChatGPT](https://chatgpt.com/)
+- [Deezer API](https://developers.deezer.com/api/)
+  
 #### Progression
-- Semaine 1 : ...
-- Semaine 2 : ...
-- Semaine 3 : ...
+- Semaine 1 :
+      - Initialisation du projet
+      - Prise de connaissance des capacités de l'API
+      - Tests de l'API
+- Semaine 2 : 
+      - Ajout du composant des carte des musiques
+      - Affichage de ces dernières
+      - Correction des premier bugs
+- Semaine 3 : 
+      - Ajout du code de base de la page favoris
+      - Ajout du code de base de la page recherche
+      - Ajout du composant des carte artistes
+      - Affichage de ces derniers
+      - Tri par type des favoris
 - Semaine 4 : ...
 - ...
 
@@ -43,7 +54,7 @@ _(Capture d’écran de l’application)_
 ## 3. 🛠️ Outils et méthodologie
 
 ### Environnement de développement
-- **IDE** : VS Code / WebStorm / Autre
+- **IDE** : WebStorm
 - **Versioning** : Git + GitHub
 - **Dépendances principales** : Vue 3, Vuetify 3, Pinia, Axios/Fetch
 - **Gestion API Keys** : `.env` + `.env.example`
@@ -63,16 +74,16 @@ _(Capture d’écran de l’application)_
 - ...
 
 ### Choix techniques
-- API sélectionnée :  
-- Justification du choix :  
+- API sélectionnée :  Deezer API
+- Justification du choix :  Pas trop de limite de requètes
 - Endpoints utilisés :  
-- Limites/quotas connus :  
+- Limites/quotas connus :  50 / 5sec
 
 ### Architecture (Descriptif + schéma simple + data-flow)
 - `App.vue` : layout principal  
 - `views/` : pages (liste, détail, favoris)  
 - ...
-Outils utiles : Figma / Draw.io / ...
+Outils utiles : Figma et Draw.io
 
 **Data-flow résumé :**  
 - Vue déclenche un **event utilisateur** → composant appelle une fonction du **store** → ...
@@ -113,17 +124,17 @@ Outils utiles : Figma / Draw.io / ...
 **⚠️ TRANSPARENCE OBLIGATOIRE** : Si vous utilisez une IA, vous DEVEZ :
 
 ### IA utilisée
-- **Nom** : ChatGPT / Claude / GitHub Copilot / Autre  
-- **Version** : _(ex. GPT-4)_  
-- **Contexte** : Aide ponctuelle / Génération de code / Debugging  
+- **Nom** : ChatGPT / Claude
+- **Version** : GPT‑5 / Sonnet 4.5
+- **Contexte** : Génération de code / Debugging / Don d'inspiration
 
 ### Utilisation détaillée
 **Domaines d'aide :**
-- Aide au code général : X%
-- Génération de snippets Vue/Vuetify : X%  
-- Aide à la structuration du projet : X%
-- Debugging : X%  
-- Recherche d’idées : X%  
+- Aide au code général : 80%
+- Génération de snippets Vue/Vuetify : X%
+- Aide à la structuration du projet : 0%
+- Debugging : 50%  
+- Recherche d’idées : 20%  
 
 **Compréhension et adaptation**
 - Expliquer ce que fait le code généré  
