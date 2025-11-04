@@ -46,8 +46,9 @@ _(Capture d’écran de l’application)_
       - Ajout du composant des carte artistes
       - Affichage de ces derniers
       - Tri par type des favoris
-- Semaine 4 : ...
-- ...
+- Semaine 4 : 
+      - Ajout de l'affichage des albums dans la page index
+      - Ajout de la recherche dynamique
 
 ---
 
