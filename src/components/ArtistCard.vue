@@ -21,9 +21,6 @@
     <v-card-title class="text-capitalize">
       {{ artiste.name }}
     </v-card-title>
-    <v-card-subtitle v-if="artiste.nb_fan">
-      {{ artiste.nb_fan.toLocaleString() }} fans
-    </v-card-subtitle>
   </v-card>
 </template>
 

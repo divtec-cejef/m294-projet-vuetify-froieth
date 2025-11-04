@@ -48,10 +48,9 @@
     if (isArtist.value) {
       // C'est un artiste
       return props.item.picture_medium || props.item.picture_big || '/images/default.jpg'
-    } else {
-      // C'est une chanson
-      return props.item.album?.cover_medium || props.item.cover_medium || '/images/default.jpg'
     }
+    // C'est une chanson
+    return props.item.album?.cover_medium || props.item.cover_medium || '/images/default.jpg'
   })
 
   const getTitle = computed(() => {
@@ -59,9 +58,7 @@
   })
 
   const getSubtitle = computed(() => {
-    if (isArtist.value) {
-      return props.item.nb_fan ? `${props.item.nb_fan.toLocaleString()} fans` : ''
-    } else {
+    if (!isArtist.value) {
       return props.item.artist?.name || ''
     }
   })

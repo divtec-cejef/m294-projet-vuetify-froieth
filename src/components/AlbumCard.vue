@@ -4,7 +4,7 @@
       class="card-img"
       contain
       height="300"
-      :src="album.picture_medium || album.picture_big || '/images/default.jpg'"
+      :src="album.cover_medium || album.cover_big || '/images/default.jpg'"
     >
       <!-- bouton coeur en haut à droite -->
       <v-btn
@@ -19,8 +19,11 @@
     </v-img>
 
     <v-card-title class="text-capitalize">
-      {{ album.name }}
+      {{ album.title }}
     </v-card-title>
+    <v-card-subtitle v-if="album.artist">
+      {{ album.artist.name }}
+    </v-card-subtitle>
   </v-card>
 </template>
 
@@ -54,11 +57,7 @@
   position: absolute;
   top: 1em;
   right: 1em;
-  background-color: rgba(255, 255, 255, 0.7);
-  transition: background-color 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.favorite-btn:hover {
-  background-color: rgba(255, 255, 255, 1);
-}
 </style>

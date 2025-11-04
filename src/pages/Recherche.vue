@@ -3,51 +3,43 @@
     <h1 class="mb-6 text-center">Recherche</h1>
 
     <!-- Barre de recherche -->
-    <v-text-field
-      v-model="searchQuery"
-      class="mb-6"
-      clearable
-      label="Rechercher un artiste ou une chanson..."
-      prepend-inner-icon="mdi-magnify"
-      @click:clear="clearSearch"
-      @keyup.enter="handleSearch"
-    />
-
-    <v-btn
-      class="mb-6"
-      color="primary"
-      :loading="appStore.isLoading"
-      size="large"
-      @click="handleSearch"
-    >
-      Rechercher
-    </v-btn>
+    <v-row class="mb-6">
+      <v-col cols="12">
+        <v-text-field
+          v-model="searchQuery"
+          clearable
+          label="Rechercher..."
+          prepend-inner-icon="mdi-magnify"
+          @click:clear="clearSearch"
+        />
+      </v-col>
+    </v-row>
 
     <!-- Message si aucun résultat -->
     <v-alert
-      v-if="!appStore.isLoading && searchQuery && !appStore.hasSearchResults"
+      v-if="!appStore.isLoading && searchQuery && paginatedResults.length === 0"
       class="mb-4"
+      color="#8889db"
       type="info"
     >
       Aucun résultat trouvé pour "{{ searchQuery }}"
     </v-alert>
 
     <!-- Résultats avec pagination -->
-    <div v-if="appStore.hasSearchResults">
+    <div v-if="paginatedResults.length > 0">
       <v-row>
         <v-col
-          v-for="song in paginatedResults"
-          :key="song.id"
+          v-for="item in paginatedResults"
+          :key="item.id"
           class="col-lg-custom"
           cols="6"
           md="4"
           sm="6"
         >
-          <SongCard :artiste="song" />
+          <SongCard :artiste="item" />
         </v-col>
       </v-row>
 
-      <!-- Pagination -->
       <div class="text-center mt-6">
         <v-pagination
           v-model="currentPage"
@@ -56,7 +48,7 @@
           :total-visible="7"
         />
         <p class="text-grey mt-2">
-          Résultats {{ startIndex + 1 }} - {{ endIndex }} sur {{ appStore.totalSearchResults }}
+          Résultats {{ startIndex + 1 }} - {{ endIndex }} sur {{ appStore.searchResults.length }}
         </p>
       </div>
     </div>
@@ -64,44 +56,43 @@
 </template>
 
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import SongCard from '@/components/SongCard.vue'
   import { useAppStore } from '@/stores/app'
 
   const appStore = useAppStore()
   const searchQuery = ref('')
   const currentPage = ref(1)
-  const itemsPerPage = 15 // ✅ Nombre de résultats par page
+  const itemsPerPage = 15
 
-  async function handleSearch () {
-    if (searchQuery.value.trim()) {
-      currentPage.value = 1 // ✅ Retour à la page 1 à chaque recherche
-      await appStore.searchArtist(searchQuery.value)
+  // Debounce pour recherche dynamique
+  let debounceTimeout = null
+  watch(searchQuery, query => {
+    clearTimeout(debounceTimeout)
+
+    if (!query.trim()) {
+      appStore.clearSearch()
+      return
     }
-  }
 
+    debounceTimeout = setTimeout(async () => {
+      currentPage.value = 1
+      await appStore.searchArtist(query) // ✅ méthode existante
+    }, 500)
+  })
+
+  // Réinitialiser la recherche
   function clearSearch () {
-    appStore.clearSearch()
     searchQuery.value = ''
     currentPage.value = 1
+    appStore.clearSearch()
   }
 
-  // ✅ Calcul de la pagination
-  const totalPages = computed(() => {
-    return Math.ceil(appStore.searchResults.length / itemsPerPage)
-  })
-
-  const startIndex = computed(() => {
-    return (currentPage.value - 1) * itemsPerPage
-  })
-
-  const endIndex = computed(() => {
-    return Math.min(startIndex.value + itemsPerPage, appStore.searchResults.length)
-  })
-
-  const paginatedResults = computed(() => {
-    return appStore.searchResults.slice(startIndex.value, endIndex.value)
-  })
+  // Pagination
+  const totalPages = computed(() => Math.ceil(appStore.searchResults.length / itemsPerPage))
+  const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage)
+  const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, appStore.searchResults.length))
+  const paginatedResults = computed(() => appStore.searchResults.slice(startIndex.value, endIndex.value))
 </script>
 
 <style scoped>

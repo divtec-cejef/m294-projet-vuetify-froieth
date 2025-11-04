@@ -1,6 +1,4 @@
-// Utilities
 import { defineStore } from 'pinia'
-// Importer l'API
 import api from '@/plugins/axios'
 
 export const useAppStore = defineStore('app', {
@@ -9,23 +7,26 @@ export const useAppStore = defineStore('app', {
     error: null,
     resources: [],
     artists: [],
-    searchResults: [], // ✅ Nouveau : résultats de recherche
-    favorites: [],
+    albums: [],
+    searchResults: [],
+    favorites: [], // favoris
   }),
 
   getters: {
     hasResources: state => state.resources.length > 0,
     totalResources: state => state.resources.length,
-    hasSearchResults: state => state.searchResults.length > 0, // ✅ Nouveau
-    totalSearchResults: state => state.searchResults.length, // ✅ Nouveau
+    hasSearchResults: state => state.searchResults.length > 0,
+    totalSearchResults: state => state.searchResults.length,
     totalFavorites: state => state.favorites.length,
   },
 
   actions: {
+    // ---------------------------
+    // FETCH & INIT
+    // ---------------------------
     async fetchRoster () {
       this.isLoading = true
       this.error = null
-
       try {
         const response = await api.get('/chart/0.json')
         return response.data
@@ -38,15 +39,32 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    // ✅ Nouvelle méthode de recherche
+    async init () {
+      // Charger les favoris depuis le localStorage
+      this.initFavorites()
+
+      const data = await this.fetchRoster()
+      console.log('📦 DATA BRUTE:', data)
+
+      if (data) {
+        this.resources = data.tracks?.data || data.data || []
+        this.artists = data.artists?.data || []
+        this.albums = data.albums?.data || []
+        console.log('✅ Albums chargés:', this.albums)
+      } else {
+        console.error('Aucune donnée récupérée')
+      }
+    },
+
+    // ---------------------------
+    // RECHERCHE
+    // ---------------------------
     async searchArtist (query) {
       this.isLoading = true
       this.error = null
-
       try {
         const response = await api.get(`/search?q=${encodeURIComponent(query)}`)
         console.log('🔍 Résultats de recherche:', response.data)
-
         if (response.data) {
           this.searchResults = response.data.data || []
           return this.searchResults
@@ -61,23 +79,27 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    // ✅ Réinitialiser les résultats de recherche
     clearSearch () {
       this.searchResults = []
     },
 
-    async init () {
-      const data = await this.fetchRoster()
-
-      console.log('📦 DATA BRUTE:', data)
-
-      if (data) {
-        this.resources = data.tracks?.data || data.data || []
-        this.artists = data.artists?.data || []
-        console.log('RESOURCES:', this.resources)
-      } else {
-        console.error('Aucune donnée récupérée')
+    // ---------------------------
+    // FAVORIS + LOCALSTORAGE
+    // ---------------------------
+    initFavorites () {
+      const stored = localStorage.getItem('favorites')
+      if (stored) {
+        try {
+          this.favorites = JSON.parse(stored)
+        } catch (error) {
+          console.error('Erreur lors du parsing des favoris depuis localStorage:', error)
+          this.favorites = []
+        }
       }
+    },
+
+    saveFavorites () {
+      localStorage.setItem('favorites', JSON.stringify(this.favorites))
     },
 
     isFavorite (song) {
@@ -86,7 +108,6 @@ export const useAppStore = defineStore('app', {
 
     toggleFavorite (song) {
       const index = this.favorites.findIndex(fav => fav.id === song.id)
-
       if (index === -1) {
         this.favorites.push(song)
         console.log('Ajouté aux favoris:', song.title || song.name)
@@ -94,6 +115,8 @@ export const useAppStore = defineStore('app', {
         this.favorites.splice(index, 1)
         console.log('Retiré des favoris:', song.title || song.name)
       }
+      // Sauvegarder automatiquement dans le localStorage
+      this.saveFavorites()
     },
   },
 })
