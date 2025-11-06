@@ -49,7 +49,9 @@ _(Capture d’écran de l’application)_
 - Semaine 4 : 
       - Ajout de l'affichage des albums dans la page index
       - Ajout de la recherche dynamique
-
+      - Ajout du tri par type dans la recherche (musique/artiste/album)
+      - Correction bugs d'affichage des albums dans l'index
+      - Ajout d'un fichier styles.css pour centraliser le CSS
 ---
 
 ## 3. 🛠️ Outils et méthodologie
