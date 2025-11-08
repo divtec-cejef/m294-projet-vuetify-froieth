@@ -1,0 +1,81 @@
+/* Composant */
+.card-img {
+    margin-bottom: -2em;
+    margin-top: -2.1em;
+}
+
+.relative-card {
+    position: relative;
+    padding-bottom: 1em!important;
+    cursor: pointer; /* ✅ Curseur pointer */
+    transition: transform 0.2s;
+}
+
+.relative-card:hover {
+    transform: scale(1.02); /* ✅ Petit effet au survol */
+}
+
+/* bouton coeur sur l'image */
+.favorite-btn {
+    position: absolute;
+    top: 2.4em;
+    right: 0.3em;
+    background-color: rgba(255, 255, 255, 0.2);
+    z-index: 1; /* ✅ Important pour que le clic fonctionne */
+}
+
+
+/* Page */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+.slider-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.slider-arrow {
+    flex-shrink: 0;
+}
+
+.slider-arrow.left {
+    margin-right: 8px;
+}
+
+.slider-arrow.right {
+    margin-left: 8px;
+}
+
+.song-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.song-index {
+    background: linear-gradient(45deg, #1ebbe7, #ca6bd4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 5rem;
+    text-align: right;
+    min-width: 80px;
+}
+
+.song-card-container {
+    flex-grow: 1;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+
+@media (min-width: 1280px) {
+    .col-lg-custom {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}

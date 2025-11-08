@@ -15,7 +15,9 @@
             md="4"
             sm="6"
           >
-            <FavoriteCard :item="song" />
+            <div class="song-card-container">
+              <FavoriteCard :item="song" />
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -35,7 +37,9 @@
             md="4"
             sm="6"
           >
-            <FavoriteCard :item="artist" />
+            <div class="song-card-container">
+              <FavoriteCard :item="artist" />
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -56,7 +60,9 @@
           md="4"
           sm="6"
         >
-          <FavoriteCard :item="album" />
+          <div class="song-card-container">
+            <FavoriteCard :item="album" />
+          </div>
         </v-col>
       </v-row>
     </div>
@@ -68,7 +74,7 @@
       type="info"
     >
       Vous n'avez pas encore de favoris.<br>
-      <v-btn class="mt-2" color="#8889ef" to="/">Retourner à l'accueil'</v-btn>
+      <v-btn class="mt-2" color="#8889ef" to="/">Retourner à l'accueil</v-btn>
     </v-alert>
   </v-container>
 </template>
@@ -96,12 +102,3 @@
     return favoris.value.filter(item => item.type === 'album')
   })
 </script>
-
-<style scoped>
-@media (min-width: 1280px) {
-  .col-lg-custom {
-    flex: 0 0 20%;
-    max-width: 20%;
-  }
-}
-</style>

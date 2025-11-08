@@ -40,7 +40,7 @@ export const useAppStore = defineStore('app', {
     },
 
     async init () {
-      // Charger les favoris depuis le localStorage
+      // les favoris depuis le localStorage
       this.initFavorites()
 
       const data = await this.fetchRoster()
@@ -70,6 +70,40 @@ export const useAppStore = defineStore('app', {
           return this.searchResults
         }
         return []
+      } catch (error) {
+        this.error = error.message || 'Erreur lors de la recherche'
+        console.error('Erreur de recherche:', error)
+        return []
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    // Dans les actions de ton store
+    async searchAll (query) {
+      this.isLoading = true
+      this.error = null
+      this.searchResults = []
+
+      try {
+        // Recherche parallèle pour tous les types
+        const [tracks, artists, albums] = await Promise.all([
+          api.get(`/search/track?q=${encodeURIComponent(query)}`),
+          api.get(`/search/artist?q=${encodeURIComponent(query)}`),
+          api.get(`/search/album?q=${encodeURIComponent(query)}`),
+        ])
+
+        // Combiner tous les résultats avec un type pour les identifier
+        const allResults = [
+          ...(tracks.data?.data || []).map(item => ({ ...item, type: 'track' })),
+          ...(artists.data?.data || []).map(item => ({ ...item, type: 'artist' })),
+          ...(albums.data?.data || []).map(item => ({ ...item, type: 'album' })),
+        ]
+
+        this.searchResults = allResults
+        console.log('🔍 Résultats combinés:', this.searchResults)
+
+        return this.searchResults
       } catch (error) {
         this.error = error.message || 'Erreur lors de la recherche'
         console.error('Erreur de recherche:', error)

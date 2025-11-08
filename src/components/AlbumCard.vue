@@ -1,5 +1,5 @@
 <template>
-  <v-card class="relative-card">
+  <v-card class="relative-card" @click="goToDetails">
     <v-img
       class="card-img"
       contain
@@ -28,36 +28,20 @@
 </template>
 
 <script setup>
+  import { useRouter } from 'vue-router'
   import { useAppStore } from '@/stores/app'
 
+  const router = useRouter()
   const appStore = useAppStore()
 
-  defineProps({
+  const props = defineProps({
     album: {
       type: Object,
       required: true,
     },
   })
+
+  function goToDetails () {
+    router.push(`/album/${props.album.id}`)
+  }
 </script>
-
-<style scoped>
-.card-img {
-  margin-bottom: -2em;
-  margin-top: -2.1em;
-}
-
-.relative-card {
-  position: relative;
-  padding-bottom: 1em;
-  overflow: hidden;
-}
-
-/* bouton coeur sur l'image */
-.favorite-btn {
-  position: absolute;
-  top: 1em;
-  right: 1em;
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-</style>
