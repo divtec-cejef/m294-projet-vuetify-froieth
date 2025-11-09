@@ -52,6 +52,7 @@ _(Capture d’écran de l’application)_
       - Ajout du tri par type dans la recherche (musique/artiste/album)
       - Correction bugs d'affichage des albums dans l'index
       - Ajout d'un fichier styles.css pour centraliser le CSS
+      - Ajout de la page des détails pour les musiques, les albums et les artistes
 ---
 
 ## 3. 🛠️ Outils et méthodologie
