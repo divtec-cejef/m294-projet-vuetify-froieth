@@ -23,6 +23,28 @@
       </div>
 
       <!-- Séparateur -->
+      <v-divider v-if="artisteFavorites.length > 0 && albumFavorites.length > 0 || musiqueFavorites.length > 0 && albumFavorites.length > 0" class="my-8" />
+
+      <!-- Section Album -->
+      <div v-if="albumFavorites.length > 0">
+        <h2 class="mb-4">Albums</h2>
+        <v-row>
+          <v-col
+            v-for="album in albumFavorites"
+            :key="album.id"
+            class="col-lg-custom"
+            cols="6"
+            md="4"
+            sm="6"
+          >
+            <div class="song-card-container">
+              <FavoriteCard :item="album" />
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+
+      <!-- Séparateur -->
       <v-divider v-if="musiqueFavorites.length > 0 && artisteFavorites.length > 0" class="my-8" />
 
       <!-- Section Artistes -->
@@ -43,28 +65,6 @@
           </v-col>
         </v-row>
       </div>
-    </div>
-
-    <!-- Séparateur -->
-    <v-divider v-if="artisteFavorites.length > 0 && albumFavorites.length > 0 || musiqueFavorites.length > 0 && albumFavorites.length > 0" class="my-8" />
-
-    <!-- Section Album -->
-    <div v-if="albumFavorites.length > 0">
-      <h2 class="mb-4">Albums</h2>
-      <v-row>
-        <v-col
-          v-for="album in albumFavorites"
-          :key="album.id"
-          class="col-lg-custom"
-          cols="6"
-          md="4"
-          sm="6"
-        >
-          <div class="song-card-container">
-            <FavoriteCard :item="album" />
-          </div>
-        </v-col>
-      </v-row>
     </div>
 
     <v-alert

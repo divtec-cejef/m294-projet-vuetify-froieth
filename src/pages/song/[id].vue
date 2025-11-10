@@ -8,7 +8,11 @@
       Retour
     </v-btn>
 
-    <v-row v-if="song">
+    <div v-if="loading" class="text-center py-8">
+      <v-progress-circular color="primary" indeterminate />
+    </div>
+
+    <v-row v-else-if="song">
       <v-col cols="12" md="4">
         <v-img
           aspect-ratio="1"
@@ -29,6 +33,11 @@
         <v-chip v-if="song.rank" class="mb-2 mr-2">
           <v-icon start>mdi-chart-line</v-icon>
           Popularité: {{ song.rank }}
+        </v-chip>
+
+        <v-chip v-if="song.album?.release_date" class="mb-2 mr-2">
+          <v-icon start>mdi-calendar</v-icon>
+          {{ formatDate(song.album?.release_date) }}
         </v-chip>
 
         <div class="mt-4">
@@ -62,24 +71,40 @@
 </template>
 
 <script setup>
-  import { computed, onMounted } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { useRoute } from 'vue-router'
+  import api from '@/plugins/axios'
   import { useAppStore } from '@/stores/app'
 
   const route = useRoute()
   const appStore = useAppStore()
+  const loading = ref(false)
+  const song = ref(null)
 
   const songId = computed(() => route.params.id)
 
-  const song = computed(() => {
-    return appStore.resources.find(s => s.id == songId.value)
+  onMounted(async () => {
+    // ✅ Essayer de trouver dans le store d'abord
+    const foundSong = appStore.resources.find(s => s.id == songId.value)
       || appStore.searchResults.find(s => s.id == songId.value)
       || appStore.favorites.find(s => s.id == songId.value)
-  })
 
-  onMounted(() => {
-    if (!song.value) {
-      console.warn('Chanson non trouvée dans le store')
+    if (foundSong && (foundSong.release_date || foundSong.album?.release_date)) {
+      // Si on a déjà toutes les infos
+      song.value = foundSong
+    } else {
+      // ✅ Sinon, fetch les détails complets depuis l'API
+      loading.value = true
+      try {
+        const response = await api.get(`/track/${songId.value}`)
+        song.value = response.data
+      } catch (error) {
+        console.error('Erreur lors du chargement de la chanson:', error)
+        // Si le fetch échoue, utiliser quand même les données du store
+        song.value = foundSong
+      } finally {
+        loading.value = false
+      }
     }
   })
 
@@ -87,5 +112,15 @@
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
     return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  function formatDate (dateString) {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    return date.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
   }
 </script>

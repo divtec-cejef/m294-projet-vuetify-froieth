@@ -25,11 +25,6 @@
         <h1 class="mb-2">{{ album.title }}</h1>
         <h3 v-if="album.artist" class="text-grey mb-4">{{ album.artist.name }}</h3>
 
-        <v-chip v-if="album.release_date" class="mb-2 mr-2">
-          <v-icon start>mdi-calendar</v-icon>
-          {{ formatDate(album.release_date) }}
-        </v-chip>
-
         <v-chip v-if="album.nb_tracks" class="mb-2 mr-2">
           <v-icon start>mdi-music-note</v-icon>
           {{ album.nb_tracks }} pistes
@@ -38,6 +33,11 @@
         <v-chip v-if="album.fans" class="mb-2 mr-2">
           <v-icon start>mdi-account-multiple</v-icon>
           {{ album.fans.toLocaleString() }} fans
+        </v-chip>
+
+        <v-chip v-if="album.release_date" class="mb-2 mr-2">
+          <v-icon start>mdi-calendar</v-icon>
+          {{ formatDate(album.release_date) }}
         </v-chip>
 
         <div class="mt-4">

@@ -40,6 +40,9 @@ export const useAppStore = defineStore('app', {
     },
 
     async init () {
+      // Initialise les données depuis un JSON
+      await this.fetchSearchFromJson()
+
       // les favoris depuis le localStorage
       this.initFavorites()
 
@@ -59,27 +62,6 @@ export const useAppStore = defineStore('app', {
     // ---------------------------
     // RECHERCHE
     // ---------------------------
-    async searchArtist (query) {
-      this.isLoading = true
-      this.error = null
-      try {
-        const response = await api.get(`/search?q=${encodeURIComponent(query)}`)
-        console.log('🔍 Résultats de recherche:', response.data)
-        if (response.data) {
-          this.searchResults = response.data.data || []
-          return this.searchResults
-        }
-        return []
-      } catch (error) {
-        this.error = error.message || 'Erreur lors de la recherche'
-        console.error('Erreur de recherche:', error)
-        return []
-      } finally {
-        this.isLoading = false
-      }
-    },
-
-    // Dans les actions de ton store
     async searchAll (query) {
       this.isLoading = true
       this.error = null
@@ -152,5 +134,31 @@ export const useAppStore = defineStore('app', {
       // Sauvegarder automatiquement dans le localStorage
       this.saveFavorites()
     },
+  },
+
+  // ---------------------------
+  // RECUPERER DONNEE AVEC UN JSON
+  // ---------------------------
+  async fetchSearchFromJson () {
+    try {
+      const response = await fetch('src/data/searchEminem.json')
+      const data = await response.json()
+      let searchArray = []
+      if (Array.isArray(data)) {
+        // Le JSON est directement un tableau
+        searchArray = data
+      } else if (data && Array.isArray(data.results)) {
+        // Le JSON est un objet avec une propriété 'results' qui est le tableau
+        searchArray = data.results
+      } else {
+        // Cas par défaut : on affecte la valeur telle quelle
+        searchArray = data
+      }
+      this.searchResults = searchArray
+      console.log('Résultat recherche chargé depuis fichier JSON :', this.searchResults)
+    } catch (error) {
+      this.error = error
+      console.error('Erreur fetchSearchFromJson :', error)
+    }
   },
 })
