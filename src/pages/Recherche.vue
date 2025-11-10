@@ -1,8 +1,9 @@
 <template>
   <v-container>
+    <!-- Titre principal de la page -->
     <h1 class="mb-6 text-center">Recherche</h1>
 
-    <!-- Barre de recherche + Filtre -->
+    <!-- Barre de recherche et filtre -->
     <v-row class="mb-6">
       <v-col cols="12" md="9">
         <v-text-field
@@ -23,7 +24,7 @@
       </v-col>
     </v-row>
 
-    <!-- Message si aucun résultat -->
+    <!-- Message si aucun résultat n'est trouvé -->
     <v-alert
       v-if="!appStore.isLoading && searchQuery && filteredResults.length === 0"
       class="mb-4"
@@ -33,7 +34,7 @@
       Aucun résultat trouvé pour "{{ searchQuery }}"
     </v-alert>
 
-    <!-- Résultats avec pagination -->
+    <!-- Affichage des résultats avec pagination -->
     <div v-if="paginatedResults.length > 0">
       <v-row>
         <v-col
@@ -44,13 +45,14 @@
           md="4"
           sm="6"
         >
-          <!-- Affichage conditionnel selon le type -->
+          <!-- Affichage conditionnel selon le type d'élément -->
           <SongCard v-if="isSong(item)" :artiste="item" />
           <ArtistCard v-else-if="isArtist(item)" :artiste="item" />
           <AlbumCard v-else-if="isAlbum(item)" :album="item" />
         </v-col>
       </v-row>
 
+      <!-- Pagination et indicateur des résultats -->
       <div class="text-center mt-6">
         <v-pagination
           v-model="currentPage"
@@ -73,15 +75,15 @@
   import SongCard from '@/components/SongCard.vue'
   import { useAppStore } from '@/stores/app'
 
-  const appStore = useAppStore()
+  const appStore = useAppStore() // Accès au store global
 
-  // ✅ Récupérer l'état sauvegardé ou valeurs par défaut
+  // Récupération des valeurs sauvegardées ou initialisation par défaut
   const searchQuery = ref(sessionStorage.getItem('search_query') || '')
   const selectedFilter = ref(sessionStorage.getItem('search_filter') || 'all')
   const currentPage = ref(Number.parseInt(sessionStorage.getItem('search_page') || '1'))
-  const itemsPerPage = 15
+  const itemsPerPage = 15 // Nombre d'éléments par page
 
-  // Options de filtre
+  // Options de filtre affichées dans le select
   const filterOptions = [
     { title: 'Tout', value: 'all' },
     { title: 'Musiques', value: 'tracks' },
@@ -89,14 +91,14 @@
     { title: 'Albums', value: 'albums' },
   ]
 
-  // ✅ Restaurer la recherche au montage si nécessaire
+  // Restaurer la recherche au montage si nécessaire
   onMounted(async () => {
     if (searchQuery.value && appStore.searchResults.length === 0) {
       await appStore.searchAll(searchQuery.value)
     }
   })
 
-  // ✅ Sauvegarder l'état avant de quitter
+  // Sauvegarder l'état avant de quitter la page
   onBeforeUnmount(() => {
     sessionStorage.setItem('search_query', searchQuery.value)
     sessionStorage.setItem('search_filter', selectedFilter.value)
@@ -108,7 +110,7 @@
   const isArtist = item => item.type === 'artist' || (item.picture_medium && !item.cover_medium)
   const isAlbum = item => item.type === 'album' || (item.cover_medium && item.title && !item.duration)
 
-  // Debounce pour recherche dynamique
+  // Debounce pour recherche dynamique (évite trop de requêtes)
   let debounceTimeout = null
   watch(searchQuery, query => {
     clearTimeout(debounceTimeout)
@@ -137,7 +139,7 @@
     sessionStorage.setItem('search_page', newPage.toString())
   })
 
-  // Réinitialiser la recherche
+  // Réinitialiser la recherche et les filtres
   function clearSearch () {
     searchQuery.value = ''
     currentPage.value = 1
@@ -148,7 +150,7 @@
     sessionStorage.removeItem('search_page')
   }
 
-  // Filtrage par type
+  // Filtrage des résultats selon le type
   const filteredResults = computed(() => {
     if (selectedFilter.value === 'all') {
       return appStore.searchResults

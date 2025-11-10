@@ -4,6 +4,7 @@
     <h1 class="mb-6 text-center">Meilleurs musiques du moment</h1>
 
     <div class="slider-container">
+      <!-- Flèche gauche pour le slider des chansons -->
       <v-btn
         class="slider-arrow left"
         icon
@@ -13,6 +14,7 @@
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
 
+      <!-- Contenu du slider des chansons -->
       <div class="slider-content">
         <v-row>
           <v-col
@@ -23,8 +25,10 @@
             sm="6"
           >
             <div class="song-wrapper">
+              <!-- Position de la chanson dans le classement -->
               <span class="song-index">{{ song.position }}</span>
               <div class="song-card-container">
+                <!-- Composant SongCard pour afficher la chanson -->
                 <SongCard :artiste="song" />
               </div>
             </div>
@@ -32,6 +36,7 @@
         </v-row>
       </div>
 
+      <!-- Flèche droite pour le slider des chansons -->
       <v-btn
         class="slider-arrow right"
         icon
@@ -42,6 +47,7 @@
       </v-btn>
     </div>
 
+    <!-- Indicateur de position du slider des chansons -->
     <div class="text-center mt-4 mb-12">
       <span class="text-grey">
         {{ currentSongIndex + 1 }} - {{ Math.min(currentSongIndex + 3, filteredSong.length) }}
@@ -56,6 +62,7 @@
     <h1 class="mb-6 text-center mt-12">Meilleurs albums du moment</h1>
 
     <div class="slider-container">
+      <!-- Flèche gauche pour le slider des albums -->
       <v-btn
         class="slider-arrow left"
         icon
@@ -65,6 +72,7 @@
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
 
+      <!-- Contenu du slider des albums -->
       <div class="slider-content">
         <v-row>
           <v-col
@@ -77,6 +85,7 @@
             <div class="song-wrapper">
               <span class="song-index">{{ album.position }}</span>
               <div class="song-card-container">
+                <!-- Composant AlbumCard pour afficher l'album -->
                 <AlbumCard :album="album" />
               </div>
             </div>
@@ -84,6 +93,7 @@
         </v-row>
       </div>
 
+      <!-- Flèche droite pour le slider des albums -->
       <v-btn
         class="slider-arrow right"
         icon
@@ -94,6 +104,7 @@
       </v-btn>
     </div>
 
+    <!-- Indicateur de position du slider des albums -->
     <div class="text-center mt-4 mb-12">
       <span class="text-grey">
         {{ currentAlbumIndex + 1 }} - {{ Math.min(currentAlbumIndex + 3, filteredAlbums.length) }}
@@ -108,6 +119,7 @@
     <h1 class="mb-6 text-center mt-12">Meilleurs artistes du moment</h1>
 
     <div class="slider-container">
+      <!-- Flèche gauche pour le slider des artistes -->
       <v-btn
         class="slider-arrow left"
         icon
@@ -117,6 +129,7 @@
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
 
+      <!-- Contenu du slider des artistes -->
       <div class="slider-content">
         <v-row>
           <v-col
@@ -129,6 +142,7 @@
             <div class="song-wrapper">
               <span class="song-index">{{ artist.position }}</span>
               <div class="song-card-container">
+                <!-- Composant ArtistCard pour afficher l’artiste -->
                 <ArtistCard :artiste="artist" />
               </div>
             </div>
@@ -136,6 +150,7 @@
         </v-row>
       </div>
 
+      <!-- Flèche droite pour le slider des artistes -->
       <v-btn
         class="slider-arrow right"
         icon
@@ -146,6 +161,7 @@
       </v-btn>
     </div>
 
+    <!-- Indicateur de position du slider des artistes -->
     <div class="text-center mt-4 mb-12">
       <span class="text-grey">
         {{ currentArtistIndex + 1 }} - {{ Math.min(currentArtistIndex + 3, filteredArtists.length) }}
@@ -156,29 +172,33 @@
 </template>
 
 <script setup>
+// Import des outils Vue et des composants nécessaires
   import { computed, onMounted, ref } from 'vue'
   import AlbumCard from '@/components/AlbumCard.vue'
   import ArtistCard from '@/components/ArtistCard.vue'
   import SongCard from '@/components/SongCard.vue'
   import { useAppStore } from '@/stores/app'
 
-  const appStore = useAppStore()
-  const search = ref('')
-  const currentSongIndex = ref(0)
-  const currentArtistIndex = ref(0)
-  const currentAlbumIndex = ref(0)
+  const appStore = useAppStore() // Accès au store global
+  const search = ref('') // Texte de recherche
+  const currentSongIndex = ref(0) // Index courant du slider des chansons
+  const currentArtistIndex = ref(0) // Index courant du slider des artistes
+  const currentAlbumIndex = ref(0) // Index courant du slider des albums
 
+  // Initialisation des données du store au montage
   onMounted(() => {
     appStore.init()
   })
 
   // ===== MUSIQUES =====
+  // Tri des musiques par position
   const sortedArtiste = computed(() => {
     return [...appStore.resources].toSorted((a, b) =>
       a.position - b.position,
     )
   })
 
+  // Filtrage des musiques selon la recherche
   const filteredSong = computed(() => {
     const query = search.value.toLowerCase().trim()
     return sortedArtiste.value.filter(song =>
@@ -186,10 +206,12 @@
     )
   })
 
+  // Sélection des musiques visibles pour le slider
   const visibleSongs = computed(() => {
     return filteredSong.value.slice(currentSongIndex.value, currentSongIndex.value + 3)
   })
 
+  // Fonctions pour faire défiler le slider des musiques
   function nextSongSlide () {
     if (currentSongIndex.value >= filteredSong.value.length - 3) {
       currentSongIndex.value = 0

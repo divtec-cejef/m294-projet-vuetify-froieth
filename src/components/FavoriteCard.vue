@@ -1,25 +1,32 @@
 <template>
+  <!-- Carte générique pour chanson, album ou artiste -->
   <v-card class="relative-card" @click="goToDetails">
+    <!-- Image de l'élément (artiste, album ou chanson) -->
     <v-img
       class="card-img"
       contain
       height="300"
       :src="getImage"
     >
+      <!-- Bouton coeur pour ajouter ou retirer des favoris -->
       <v-btn
         class="favorite-btn"
         icon
         @click.stop.prevent="appStore.toggleFavorite(item)"
       >
+        <!-- Icône du coeur : plein si favori, contour sinon -->
         <v-icon :color="appStore.isFavorite(item) ? '#8889db' : 'black'">
           {{ appStore.isFavorite(item) ? 'mdi-heart' : 'mdi-heart-outline' }}
         </v-icon>
       </v-btn>
     </v-img>
 
+    <!-- Titre de l'élément -->
     <v-card-title class="text-capitalize">
       {{ getTitle }}
     </v-card-title>
+
+    <!-- Sous-titre : nombre de fans pour un artiste, nom de l'artiste sinon -->
     <v-card-subtitle>
       {{ getSubtitle }}
     </v-card-subtitle>
@@ -31,17 +38,18 @@
   import { useRouter } from 'vue-router'
   import { useAppStore } from '@/stores/app'
 
-  const router = useRouter()
-  const appStore = useAppStore()
+  const router = useRouter() // Pour navigation
+  const appStore = useAppStore() // Accès au store global
 
+  // Props reçues par le composant
   const props = defineProps({
     item: {
       type: Object,
-      required: true,
+      required: true, // L'élément est obligatoire
     },
   })
 
-  // Détecter si c'est une chanson, un artiste ou un album
+  // Détection du type d'élément
   const isArtist = computed(() => {
     return props.item.type === 'artist' || (props.item.picture_medium || props.item.picture_big)
   })
@@ -54,6 +62,7 @@
     return props.item.type === 'track' || !(!props.item.title || !props.item.album)
   })
 
+  // Détermination de l'image à afficher selon le type
   const getImage = computed(() => {
     if (isArtist.value) {
       return props.item.picture_medium || props.item.picture_big || '/images/default.jpg'
@@ -64,10 +73,12 @@
     }
   })
 
+  // Détermination du titre à afficher
   const getTitle = computed(() => {
     return props.item.name || props.item.title
   })
 
+  // Détermination du sous-titre à afficher
   const getSubtitle = computed(() => {
     if (isArtist.value) {
       return props.item.nb_fan ? `${props.item.nb_fan.toLocaleString()} fans` : ''
@@ -76,7 +87,7 @@
     }
   })
 
-  // ✅ Navigation selon le type
+  // Navigation vers la page de détails selon le type
   function goToDetails () {
     if (isArtist.value) {
       router.push(`/artist/${props.item.id}`)
@@ -87,29 +98,3 @@
     }
   }
 </script>
-
-<style scoped>
-.card-img {
-  margin-bottom: -2em;
-  margin-top: -2.1em;
-}
-
-.relative-card {
-  position: relative;
-  padding-bottom: 1em;
-  cursor: pointer; /* ✅ Curseur pointer */
-  transition: transform 0.2s;
-}
-
-.relative-card:hover {
-  transform: scale(1.02); /* ✅ Effet au survol */
-}
-
-.favorite-btn {
-  position: absolute;
-  top: 2.4em;
-  right: 0.3em;
-  background-color: rgba(255, 255, 255, 0.2);
-  z-index: 1;
-}
-</style>

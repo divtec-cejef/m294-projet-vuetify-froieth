@@ -2,16 +2,22 @@ import { defineStore } from 'pinia'
 import api from '@/plugins/axios'
 
 export const useAppStore = defineStore('app', {
+  // ===========================
+  // STATE : données globales
+  // ===========================
   state: () => ({
-    isLoading: false,
-    error: null,
-    resources: [],
-    artists: [],
-    albums: [],
-    searchResults: [],
-    favorites: [], // favoris
+    isLoading: false, // Indicateur de chargement
+    error: null, // Message d'erreur global
+    resources: [], // Musiques principales
+    artists: [], // Artistes principaux
+    albums: [], // Albums principaux
+    searchResults: [], // Résultats de recherche
+    favorites: [], // Favoris de l'utilisateur
   }),
 
+  // ===========================
+  // GETTERS : calculs sur le state
+  // ===========================
   getters: {
     hasResources: state => state.resources.length > 0,
     totalResources: state => state.resources.length,
@@ -20,6 +26,9 @@ export const useAppStore = defineStore('app', {
     totalFavorites: state => state.favorites.length,
   },
 
+  // ===========================
+  // ACTIONS : méthodes pour modifier le state ou interagir avec API
+  // ===========================
   actions: {
     // ---------------------------
     // FETCH & INIT
@@ -28,6 +37,7 @@ export const useAppStore = defineStore('app', {
       this.isLoading = true
       this.error = null
       try {
+        // Récupération des données principales (charts)
         const response = await api.get('/chart/0.json')
         return response.data
       } catch (error) {
@@ -40,12 +50,10 @@ export const useAppStore = defineStore('app', {
     },
 
     async init () {
-      // Initialise les données depuis un JSON
-      await this.fetchSearchFromJson()
-
-      // les favoris depuis le localStorage
+      // Charger les favoris depuis localStorage
       this.initFavorites()
 
+      // Récupérer les données principales
       const data = await this.fetchRoster()
       console.log('📦 DATA BRUTE:', data)
 
@@ -68,14 +76,14 @@ export const useAppStore = defineStore('app', {
       this.searchResults = []
 
       try {
-        // Recherche parallèle pour tous les types
+        // Recherche parallèle pour tous les types : musiques, artistes, albums
         const [tracks, artists, albums] = await Promise.all([
           api.get(`/search/track?q=${encodeURIComponent(query)}`),
           api.get(`/search/artist?q=${encodeURIComponent(query)}`),
           api.get(`/search/album?q=${encodeURIComponent(query)}`),
         ])
 
-        // Combiner tous les résultats avec un type pour les identifier
+        // Ajouter un type à chaque résultat pour l'identifier
         const allResults = [
           ...(tracks.data?.data || []).map(item => ({ ...item, type: 'track' })),
           ...(artists.data?.data || []).map(item => ({ ...item, type: 'artist' })),
@@ -95,6 +103,7 @@ export const useAppStore = defineStore('app', {
       }
     },
 
+    // Réinitialiser les résultats de recherche
     clearSearch () {
       this.searchResults = []
     },
@@ -108,7 +117,7 @@ export const useAppStore = defineStore('app', {
         try {
           this.favorites = JSON.parse(stored)
         } catch (error) {
-          console.error('Erreur lors du parsing des favoris depuis localStorage:', error)
+          console.error('Erreur parsing favoris depuis localStorage:', error)
           this.favorites = []
         }
       }
@@ -118,10 +127,12 @@ export const useAppStore = defineStore('app', {
       localStorage.setItem('favorites', JSON.stringify(this.favorites))
     },
 
+    // Vérifier si un élément est favori
     isFavorite (song) {
       return this.favorites.some(fav => fav.id === song.id)
     },
 
+    // Ajouter ou retirer des favoris
     toggleFavorite (song) {
       const index = this.favorites.findIndex(fav => fav.id === song.id)
       if (index === -1) {
@@ -131,34 +142,36 @@ export const useAppStore = defineStore('app', {
         this.favorites.splice(index, 1)
         console.log('Retiré des favoris:', song.title || song.name)
       }
-      // Sauvegarder automatiquement dans le localStorage
+      // Sauvegarder automatiquement dans localStorage
       this.saveFavorites()
     },
-  },
 
-  // ---------------------------
-  // RECUPERER DONNEE AVEC UN JSON
-  // ---------------------------
-  async fetchSearchFromJson () {
-    try {
-      const response = await fetch('src/data/searchEminem.json')
-      const data = await response.json()
-      let searchArray = []
-      if (Array.isArray(data)) {
-        // Le JSON est directement un tableau
-        searchArray = data
-      } else if (data && Array.isArray(data.results)) {
-        // Le JSON est un objet avec une propriété 'results' qui est le tableau
-        searchArray = data.results
-      } else {
-        // Cas par défaut : on affecte la valeur telle quelle
-        searchArray = data
+    // ---------------------------
+    // CHARGER DES DONNÉES DEPUIS UN FICHIER JSON LOCAL
+    // ---------------------------
+    async fetchSearchFromJson () {
+      try {
+        const response = await fetch('src/data/searchEminem.json')
+        const data = await response.json()
+        let searchArray = []
+
+        if (Array.isArray(data)) {
+          // Le JSON est directement un tableau
+          searchArray = data
+        } else if (data && Array.isArray(data.results)) {
+          // Le JSON est un objet avec propriété 'results'
+          searchArray = data.results
+        } else {
+          // Cas par défaut
+          searchArray = data
+        }
+
+        this.searchResults = searchArray
+        console.log('Résultat recherche chargé depuis fichier JSON :', this.searchResults)
+      } catch (error) {
+        this.error = error
+        console.error('Erreur fetchSearchFromJson :', error)
       }
-      this.searchResults = searchArray
-      console.log('Résultat recherche chargé depuis fichier JSON :', this.searchResults)
-    } catch (error) {
-      this.error = error
-      console.error('Erreur fetchSearchFromJson :', error)
-    }
+    },
   },
 })
